@@ -1,6 +1,6 @@
 import tkinter as tk
+from tkinter import ttk
 from import_csv import *
-from explore_page import *
 
 
 def explore_load(other_page):
@@ -49,33 +49,33 @@ def landing_load(other_page):
 
 
 def explore_init():
-    explore_page = Tk()
+    explore_page = tk.Tk()
     explore_page.wm_state('zoomed')
 
-    exframe = Frame(explore_page)
+    exframe = tk.Frame(explore_page)
     exframe.grid(column=0, row=0, sticky=('N', 'W', 'E', 'S'))
     exframe.columnconfigure(5, weight=1)
     exframe.rowconfigure(5, weight=1)
 
     # Add title
-    title = Label(exframe, text="Explore COVID-19 Research")
+    title = tk.Label(exframe, text="Explore COVID-19 Research")
     title.grid(row=1, column=1)
 
     # Add home button
-    home_b = Button(exframe, text="Home",
-                    command=lambda: landing_load(explore_page))
+    home_b = tk.Button(exframe, text="Home",
+                       command=lambda: landing_load(explore_page))
     home_b.grid(row=2, column=2)
 
     # Query
-    query_str = StringVar(explore_page)
-    query_e = Entry(exframe, textvariable=query_str)
+    query_str = tk.StringVar(explore_page)
+    query_e = tk.Entry(exframe, textvariable=query_str)
     query_e.grid(row=3, column=3)
 
     # Dropdown search type
-    search_type = StringVar(explore_page)
+    search_type = tk.StringVar(explore_page)
     search_options = ['title', 'authors', 'publish_time', 'journal', 'keyword']
     search_type.set(search_options[0])
-    search_d = OptionMenu(exframe, search_type, *search_options)
+    search_d = tk.OptionMenu(exframe, search_type, *search_options)
     search_d.grid(row=1, column=2)
 
     # Table
@@ -92,7 +92,7 @@ def explore_init():
             table.insert("", "end", values=(x[2], x[6], x[5], x[7]))
         table.grid(row=1, column=3)
 
-    search_b = Button(exframe, text="Search", command=search_callback)
+    search_b = tk.Button(exframe, text="Search", command=search_callback)
     search_b.grid(row=1, column=4)
 
     # Run main loop
@@ -100,5 +100,7 @@ def explore_init():
 
 
 if __name__ == "__main__":
+    # s = ttk.Style()
+    # s.theme_use('clam')
     load_csv()
     landing_init()
