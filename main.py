@@ -84,6 +84,49 @@ def explore_init():
     for header in search_options:
         table.heading(header, text=header)
 
+    def summary_info(event):
+        df = find(table.item(table.selection()[0])[
+                  'values'][0])  # grab csv entry
+        l = df.values.tolist()[0]
+        top = tk.Toplevel()
+        top.wm_state('zoomed')
+        top.title("About This Article")
+
+        topframe = tk.Frame(top)
+        topframe.grid(column=0, row=0, sticky=('N', 'W', 'E', 'S'))
+        topframe.columnconfigure(2, weight=1)
+        topframe.rowconfigure(9, weight=1)
+        source_x = l[1]
+        title = l[2]
+        doi = l[3]
+        abstract = l[4]
+        publish_time = l[5]
+        authors = l[6]
+        journal = l[7]
+        url = l[10]
+
+        title_m = tk.Label(topframe, text="Title: " + title)
+        title_m.grid(row=1, column=1)
+        authors_m = tk.Label(topframe, text="Author(s): " + authors)
+        authors_m.grid(row=2, column=1)
+        publish_time_m = tk.Label(topframe, text="Published: " + publish_time)
+        publish_time_m.grid(row=3, column=1)
+        journal_m = tk.Label(topframe, text="Journal " + journal)
+        journal_m.grid(row=4, column=1)
+        source_x_m = tk.Label(topframe, text="Source: " + source_x)
+        source_x_m.grid(row=5, column=1)
+        doi_m = tk.Label(topframe, text="DOI: " + doi)
+        doi_m.grid(row=6, column=1)
+        # abstract_m = tk.Label(topframe, text="Abstract: " + abstract)
+        # abstract_m.grid(row=7, column=1)
+        url_m = tk.Label(topframe, text="URL: " + url)
+        url_m.grid(row=8, column=1)
+
+        close = tk.Button(top, text="Close", command=top.destroy)
+        close.grid()
+        top.mainloop()
+    table.bind("<Double-1>", summary_info)
+
     # Search
     def search_callback(*args):
         table.delete(*table.get_children())

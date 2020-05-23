@@ -16,6 +16,10 @@ def search(search_type, query_str):
     return df[df[search_type].str.contains(query_str, na=False, case=False)]
 
 
+def find(title):
+    return df[df.title == title]
+
+
 if __name__ == "__main__":
     df = load_csv()
     # Search by Title
