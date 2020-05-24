@@ -2,6 +2,10 @@ import tkinter as tk
 from tkinter import ttk
 from import_csv import *
 
+bg_color = '#2B2D2F'
+bg_2_color = 'blue'
+fg_color = 'white'
+
 
 def explore_load(other_page):
     other_page.destroy()
@@ -10,34 +14,46 @@ def explore_load(other_page):
 
 def landing_init():
     landing_page = tk.Tk()
-    landing_page.wm_state('zoomed')
+    landing_page.title('COVID-19 Research At a Glance')
+    width, height = landing_page.winfo_screenwidth(), landing_page.winfo_screenheight()
+    landing_page.geometry('%dx%d+0+0' % (width, height))
+    landing_page.configure(bg=bg_color)
 
     mainframe = tk.Frame(landing_page)
     mainframe.grid(column=0, row=0, sticky=('N', 'W', 'E', 'S'))
-    mainframe.columnconfigure(3, weight=1)
-    mainframe.rowconfigure(4, weight=1)
+    mainframe.configure(bg=bg_color)
 
     # Add title
-    title = tk.Label(mainframe, text="Welcome to CRAG")
-    title.grid(row=1, column=1)
+    # activebackground, activeforeground, anchor,
+    #background, bitmap, borderwidth, cursor,
+    #disabledforeground, font, foreground,
+    #highlightbackground, highlightcolor,
+    #highlightthickness, image, justify,
+    #padx, pady, relief, takefocus, text,
+    #textvariable, underline, wraplength
+    title = tk.Label(mainframe, text="Welcome to C.R.A.G.",
+                     fg=fg_color, width=20, font=("Helvetica", 40), background=bg_color)
+    title.grid(row=1, column=2, columnspan=1, pady=100)
 
     # Add explore button
     explore_b = tk.Button(mainframe, text="Explore",
-                          command=lambda: explore_load(landing_page))
-    explore_b.grid(row=2, column=2)
+                          command=lambda: explore_load(landing_page), font=("Helvetica", 38), background=bg_2_color, foreground=fg_color)
+    explore_b.grid(row=2, column=2, columnspan=1, pady=50)
 
     # Add surprise me button
-    surprise_b = tk.Button(mainframe, text="Surprise")
-    surprise_b.grid(row=3, column=2)
+    surprise_b = tk.Button(
+        mainframe,  text="Surprise", font=("Helvetica", 28), background=bg_2_color, foreground=fg_color)
+    surprise_b.grid(row=2, column=1, columnspan=1, pady=50, padx=80)
 
     # Add about us button
-    about_b = tk.Button(mainframe, text="About")
-    about_b.grid()
+    about_b = tk.Button(mainframe, text="About",
+                        font=("Helvetica", 28), background=bg_2_color, foreground=fg_color)
+    about_b.grid(row=2, column=3, pady=50, padx=80)
 
     # Add clear button
-    clear_b = tk.Button(mainframe, text="Clear",
-                        command=lambda: mainframe.destroy())
-    clear_b.grid(row=4, column=2)
+    # clear_b = tk.Button(mainframe, text="Clear",
+    #                    command=lambda: mainframe.destroy())
+    #clear_b.grid(row=4, column=2)
 
     # Run main loop
     landing_page.mainloop()
@@ -52,37 +68,39 @@ def explore_init():
     explore_page = tk.Tk()
     explore_page.wm_state('zoomed')
 
+    explore_page.title('COVID-19 Research At a Glance')
+    width, height = explore_page.winfo_screenwidth(), explore_page.winfo_screenheight()
+    explore_page.geometry('%dx%d+0+0' % (width, height))
+    explore_page.configure(bg=bg_color)
+
     exframe = tk.Frame(explore_page)
     exframe.grid(column=0, row=0, sticky=('N', 'W', 'E', 'S'))
-    exframe.columnconfigure(5, weight=1)
-    exframe.rowconfigure(5, weight=1)
-
-    # Add title
-    title = tk.Label(exframe, text="Explore COVID-19 Research")
-    title.grid(row=1, column=1)
+    exframe.configure(bg=bg_color)
 
     # Add home button
     home_b = tk.Button(exframe, text="Home",
                        command=lambda: landing_load(explore_page))
-    home_b.grid(row=2, column=2)
+    home_b.grid(row=1, column=3, sticky='E')
 
-    # Query
+    # Query entry
     query_str = tk.StringVar(explore_page)
-    query_e = tk.Entry(exframe, textvariable=query_str)
-    query_e.grid(row=3, column=3)
+    query_e = tk.Entry(exframe, textvariable=query_str,
+                       width=50, font=("Helvetica", 18))
+    query_e.grid(row=1, column=2, sticky="W")
 
     # Dropdown search type
     search_type = tk.StringVar(explore_page)
     search_options = ['title', 'authors', 'publish_time', 'journal', 'keyword']
     search_type.set(search_options[0])
     search_d = tk.OptionMenu(exframe, search_type, *search_options)
-    search_d.grid(row=1, column=2)
+    search_d.grid(row=2, column=1)
 
     # Table
     table = ttk.Treeview(exframe, columns=(
         'title', 'authors', 'publish_time', 'journal', 'keyword'), show='headings')
     for header in search_options:
         table.heading(header, text=header)
+    ttk.Style().configure('Treeview', rowheight=30)
 
     def summary_info(event):
         df = find(table.item(table.selection()[0])[
@@ -133,10 +151,10 @@ def explore_init():
         df = search(search_type.get(), query_str.get())
         for index, x in df.iterrows():
             table.insert("", "end", values=(x[2], x[6], x[5], x[7]))
-        table.grid(row=1, column=3)
-
+        table.grid(row=2, column=2)
+    table.grid(row=2, column=2, columnspan=2, sticky='W')
     search_b = tk.Button(exframe, text="Search", command=search_callback)
-    search_b.grid(row=1, column=4)
+    search_b.grid(row=1, column=2, sticky='E')
 
     # Run main loop
     explore_page.mainloop()
